@@ -1,6 +1,6 @@
-
-from sys import stdout
 """
+from sys import stdout
+
 
 prva=[]
 
@@ -86,7 +86,7 @@ def play():
     printBoard()
 play()
 """
-v = '*'
+v = str("l")
 r = int(input("enter rows: "))
 c = int(input("enter columns: "))
 m=[]
