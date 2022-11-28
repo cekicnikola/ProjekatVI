@@ -97,4 +97,6 @@ for i in range (r):
         l.append(v)
     m.append(l)
 for a in range(0,r):
-    print(m[a])
+    print(" ")
+    for i in range(0,r):
+       stdout.write(m[a][i] + " ")
