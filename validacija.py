@@ -9,15 +9,16 @@ class GameInfo:
         self.AIplayer=AIplayer
         self.table=[]
         self.letter =[]
-        #slova = ["a","b","c","d","e","f","g","h","i"]
         for z in range(0,self.columns):
             self.letter.append(chr(97 + z))
+        
         for i in range (rows):
             l=[]
             for j in range (columns):
-                #v = "-"   #int(input())
                 l.append(0)
             self.table.append(l)
+
+
     def printTable(self):
         stdout.write("   ")
         for z in range(0,self.columns):
