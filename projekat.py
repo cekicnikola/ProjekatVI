@@ -146,13 +146,24 @@ class GameInfo:
         for i in range(0,self.rows):
             print(" ")
             for j in range(0,self.columns):
-                stdout.write(str(self.table[i][j]) + " ")
+                if(self.table[i][j]==0):
+                    stdout.write("*" + " ")
+                elif(self.table[i][j]=="X"):
+                    stdout.write("X" + " ")
+                elif(self.table[i][j]=="O"):
+                    stdout.write("O" + " ")
 
 
 
 
-tabla=GameInfo(8,45,"X","O")
-tabla.printTable()
+def main():
+    tabla=GameInfo(8,45,"X","O")
+    tabla.table[0][1]="X"
+    tabla.table[1][1]="X"
+    tabla.table[0][2]="O"
+    tabla.table[0][3]="O"
+    tabla.printTable()
+main()
 
 
         
