@@ -1,5 +1,6 @@
-"""
 from sys import stdout
+"""
+
 
 
 prva=[]
@@ -85,7 +86,7 @@ def play():
     createBoard()
     printBoard()
 play()
-"""
+
 v = str("l")
 r = int(input("enter rows: "))
 c = int(input("enter columns: "))
@@ -100,3 +101,32 @@ for a in range(0,r):
     print(" ")
     for i in range(0,r):
        stdout.write(m[a][i] + " ")
+
+"""
+class GameInfo:
+    def __init__(self, rows, columns,player,AIplayer) -> None:
+        self.rows=rows
+        self.columns=columns
+        self.player=player
+        self.AIplayer=AIplayer
+        self.table=[]
+        for i in range (rows):
+            l=[]
+            for j in range (columns):
+                #v = "-"   #int(input())
+                l.append(0)
+            self.table.append(l)
+def printTable(table,rows,columns):
+    for i in range(0,rows):
+        print(" ")
+        for j in range(0,columns):
+            stdout.write(str(table[i][j]) + " ")
+
+
+
+
+tabla=GameInfo(8,8,"X","O")
+printTable(tabla.table,tabla.rows,tabla.columns)
+
+
+        
