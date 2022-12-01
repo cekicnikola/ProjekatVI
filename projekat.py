@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 from sys import stdout
 """
 
+=======
+>>>>>>> b3219bad75fc5b1fc613a57b6b81e925ead67366
 
+from sys import stdout
+"""
 
 prva=[]
 
@@ -90,6 +95,7 @@ play()
 v = str("l")
 r = int(input("enter rows: "))
 c = int(input("enter columns: "))
+<<<<<<< HEAD
 m=[]
 for i in range (r):
     l=[]
@@ -130,3 +136,28 @@ printTable(tabla.table,tabla.rows,tabla.columns)
 
 
         
+=======
+def printBoard():
+    m=[]
+    for i in range (r):
+        l=[]
+        for j in range (c):
+            #v = "-"   #int(input())
+            l.append(v)
+        m.append(l)
+    for a in range(0,r):
+        print(" ")
+        for i in range(0,r):
+           stdout.write(m[a][i] + "  ")
+
+printBoard()
+
+def checkMovemant():
+    return 0
+
+def placeXtile():
+    print("Enter coordinates for movemant: ")
+    x = int(input("Enter number: "))
+    y = int(input("enter columns: "))
+    return 0
+>>>>>>> b3219bad75fc5b1fc613a57b6b81e925ead67366
