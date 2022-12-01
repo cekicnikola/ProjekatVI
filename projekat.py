@@ -130,7 +130,7 @@ def placeXtile():
 
 """
 class GameInfo:
-    def __init__(self, rows, columns,player,AIplayer) -> None:
+    def __init__(self, rows, columns,player,AIplayer):
         self.rows=rows
         self.columns=columns
         self.player=player
@@ -142,17 +142,17 @@ class GameInfo:
                 #v = "-"   #int(input())
                 l.append(0)
             self.table.append(l)
-def printTable(table,rows,columns):
-    for i in range(0,rows):
-        print(" ")
-        for j in range(0,columns):
-            stdout.write(str(table[i][j]) + " ")
+    def printTable(self):
+        for i in range(0,self.rows):
+            print(" ")
+            for j in range(0,self.columns):
+                stdout.write(str(self.table[i][j]) + " ")
 
 
 
 
-tabla=GameInfo(8,8,"X","O")
-printTable(tabla.table,tabla.rows,tabla.columns)
+tabla=GameInfo(8,45,"X","O")
+tabla.printTable()
 
 
         
