@@ -175,27 +175,41 @@ def Move(player,tabla,row,column):
          
 
 
-            
+def isValidMove(self, row, colu):
+    #Validacija za X
+    if(row > self.rows or row+1 > self.rows):
+        print("Unete koordinate su van domasaja table!")
+        return False
+    elif (self.table[row][colu] != 0 or self.table[row+1][colu] != 0):
+        print("Unete koordinate su zauzete!")
+        return False
+    #Validacija za O
+    if(colu > self.columns or colu+1 > self.columns):
+        print("Unete koordinate su van domasaja table!")
+        return False
+    elif (self.table[row][colu] != 0 or self.table[row][colu+1] != 0):
+        print("Unete koordinate su zauzete!")
+        return False
+    return True
 
 
 
-
-    
 
 
 def main():
-    tabla=GameInfo(8,4,"X","O")
+    tabla=GameInfo(7,6,"X","O")
     tabla.table[0][1]="X"
     tabla.table[1][1]="X"
     tabla.table[0][2]="O"
     tabla.table[0][3]="O"
     tabla.printTable()
     print()
-    print(tabla.letter[3])
+    tabla.isValidMove(1,1)
+    tabla.isValidMove(0,2)
+    print(tabla.isValidMove(4,1))
+    tabla.isValidMove(1,1)
+    print(tabla.table)
 main()
-
-
-        
 
 
 
