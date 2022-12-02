@@ -1,5 +1,5 @@
 
-from sys import stdout
+from sys import stdout, tracebacklimit
 
 
 """
@@ -163,7 +163,24 @@ class GameInfo:
                     stdout.write("O" + " ")
             print()
 
+def Move(player,tabla,row,column):
+    if(player=="X"):
+        #if(isValidMove()):
+            tabla[row][column]="X"
+            tabla[row+1][column]="X"
+    elif(player=="O"):
+        #if(isValidMove()):
+            tabla[row][column]="O"
+            tabla[row][column+1]="O"
+         
 
+
+            
+
+
+
+
+    
 
 
 def main():
