@@ -35,7 +35,7 @@ class GameInfo:
             stdout.write(self.letter[z] + " ") 
         print()      
         for i in range(0,self.rows):
-            stdout.write(str(i)+ "| ")
+            stdout.write(str(i+1)+ "| ")
             for j in range(0,self.columns):
                 if(self.table[i][j]==0):
                     stdout.write("*" + " ")
@@ -44,6 +44,8 @@ class GameInfo:
                 elif(self.table[i][j]=="O"):
                     stdout.write("O" + " ")
             print()
+
+
     def isValidMove(self, row, colu):
         #Validacija za X
         if(row > self.rows or row+1 > self.rows):
@@ -61,7 +63,7 @@ class GameInfo:
             return False
         return True
 
-def Move(g:GameInfo,player,row,column):
+def move(g:GameInfo,player,row,column):
     if(player=="X"):
         if(g.isValidMove(row,column)):
             g.table[row][column]="X"
@@ -71,7 +73,7 @@ def Move(g:GameInfo,player,row,column):
             g.table[row][column]="O"
             g.table[row][column+1]="O"
          
-def dimTable()->tuple[int,int]:
+def sizeOfTable()->tuple[int,int]:
     print()
     print()
     print("------------------Dobrodosli u Domineering------------------")
@@ -91,13 +93,13 @@ def chooseFirst()->tuple[str,str]:
         return("O","X")
     else:
         print("Unesite ponovo vrednosti")
-        chooseFirst()
+        return chooseFirst()
 
 
 
 
 def main():
-    dim=dimTable()
+    dim=sizeOfTable()
     player=chooseFirst()
     game=GameInfo(dim[0],dim[1],player[0],player[1])
     game.printTable()
