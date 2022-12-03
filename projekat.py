@@ -71,24 +71,36 @@ def Move(g:GameInfo,player,row,column):
             g.table[row][column]="O"
             g.table[row][column+1]="O"
          
+def dimTable()->tuple[int,int]:
+    print()
+    print()
+    print("------------------Dobrodosli u Domineering------------------")
+    print("Molimo Vas unesite dimenzije table.")
+    print("Unesite broj vrsta:")
+    rows=int(input())
+    print("Unesite broj kolona:")
+    columns=int(input())
+    return (rows,columns)
 
-
-
-
+def chooseFirst()->tuple[str,str]:
+    print("Unesite 1, ako Vi zelite da igrate prvi. U suprotnom 0, ako igra racunar")
+    value=int(input())
+    if(value==1):
+        return ("X","O")
+    elif(value==0):
+        return("O","X")
+    else:
+        print("Unesite ponovo vrednosti")
+        chooseFirst()
 
 
 
 
 def main():
-    tabla=GameInfo(7,6,"X","O")
-    tabla.table[0][1]="X"
-    tabla.table[1][1]="X"
-    tabla.table[0][2]="O"
-    tabla.table[0][3]="O"
-    tabla.printTable()
-    print()
-    Move(tabla,"X",1,1)
-    tabla.printTable()
+    dim=dimTable()
+    player=chooseFirst()
+    game=GameInfo(dim[0],dim[1],player[0],player[1])
+    game.printTable()
 main()
 
 

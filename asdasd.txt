@@ -3,3 +3,16 @@
 3. Prikaz zadate table
 4. Funkcija potez(X ili O)
 5. Funkcija za validaciju poteza
+
+
+
+
+
+
+
+####################
++klasa GameInfo
+    -printTable
+    -isValidMove
+-Move
+-main
