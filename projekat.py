@@ -47,22 +47,23 @@ class GameInfo:
                     stdout.write("O" + " ")
             print()
 
-    def isValidMove(self, row, colu):
-        #Validacija za X
-        if(row > self.rows or row+1 > self.rows):
-            print("Unete koordinate su van domasaja table!")
-            return False
-        elif (self.table[row][colu] != 0 or self.table[row+1][colu] != 0):
-            print("Unete koordinate su zauzete!")
-            return False
-    #Validacija za O
-        if(colu > self.columns or colu+1 > self.columns):
-            print("Unete koordinate su van domasaja table!")
-            return False
-        elif (self.table[row][colu] != 0 or self.table[row][colu+1] != 0):
-            print("Unete koordinate su zauzete!")
-            return False
-        return True
+    def isValidMove(self, row, colu, player):
+        if(player == "X"): #Validacija za X
+            if(row > self.rows or row+1 > self.rows):
+                print("Unete koordinate su van domasaja table!")
+                return False
+            elif (self.table[row][colu] != 0 or self.table[row+1][colu] != 0):
+                print("Unete koordinate su zauzete!")
+                return False
+        elif(player == "O"):    #Validacija za O
+            if(colu > self.columns or colu+1 > self.columns):
+                print("Unete koordinate su van domasaja table!")
+                return False
+            elif (self.table[row][colu] != 0 or self.table[row][colu+1] != 0):
+                print("Unete koordinate su zauzete!")
+                return False
+            return True
+
     def winnerChecker(self)->bool:
         self.winner=True
         for i in range(0, self.rows):
