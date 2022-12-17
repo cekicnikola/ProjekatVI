@@ -84,16 +84,16 @@ class GameInfo:
         moveY = []
         coord = []
         if(player == "X"):
-            for i in range(0, self.rows):
-                for j in range(0, self.columns):            
+            for i in range(0, self.rows-1):
+                for j in range(0, self.columns-1):            
                     if(self.isValidMove(i,j,"X")):
                         coord.append(i)
                         coord.append(j)
                         moveX.append(coord)
             return moveX
         if(player == "O"):
-            for i in range(0, self.rows):
-                for j in range(0, self.columns):            
+            for i in range(0, self.rows-1):
+                for j in range(0, self.columns-1):            
                     if(self.isValidMove(i,j,"O")):
                         coord.append(i)
                         coord.append(j)
@@ -113,6 +113,7 @@ def move(g:GameInfo,player,row,column):
         if(g.isValidMove(convertedRow,col,"O")):
             g.table[convertedRow][col]="O"
             g.table[convertedRow][col+1]="O"
+
 def makeAMove(g:GameInfo,player):
     igrac=""
     potez=""
@@ -168,7 +169,7 @@ def main():
     player=chooseFirst()
     game=GameInfo(dim[0],dim[1],player[0],player[1],player[1])
     game.printTable()
-
+    print(game.possibleMove("X"))
     makeAMove(game,game.player)
     while(game.winnerChecker()):
         makeAMove(game,game.player2)
