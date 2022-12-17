@@ -62,7 +62,7 @@ class GameInfo:
             return (True,"Koordinate su ispravne")
 
     def winnerChecker(self)->bool:
-        if(self.possibleMove("X")==0 or self.possibleMove("O")==0):
+        if(len(self.possibleMove("X"))==0 or len(self.possibleMove("O"))==0):
             return True
         else:
             return False
