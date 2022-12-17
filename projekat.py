@@ -62,18 +62,11 @@ class GameInfo:
             return (True,"Koordinate su ispravne")
 
     def winnerChecker(self)->bool:
-        self.winner=True
-        for i in range(0, self.rows):
-            for j in range(0, self.columns):
-                #checking rows
-                if(self.table[i][j]=="O" and self.table[i][j+1]=="O"): 
-                    if(self.table[i][j]=="X" and self.table[i+1][j]=="X"): 
-                        self.winner=False
-                #checking columns
-                if(self.table[i][j]=="X" and self.table[i+1][j]=="X"):
-                    if(self.table[i][j]=="O" and self.table[i][j+1]=="O"):
-                        self.winner=False
-        return self.winner
+        if(self.possibleMove("X")==0 or self.possibleMove("O")==0):
+            return True
+        else:
+            return False
+        
 
     def possibleMove(self, player):
         moveX = []
@@ -167,19 +160,12 @@ def main():
     player=chooseFirst()
     game=GameInfo(dim[0],dim[1],player[0],player[1],player[1])
     game.printTable()
-    print("Broj poteza pre prvog poteza")
-    print(len(game.possibleMove("X")))
-    #makeAMove(game,game.player)
-    move(game, game.player,1,"a")
-    move(game, game.player,2,"b")
-    move(game, game.player,2,"c")
-
-    print("Broj poteza nakon prvog poteza")
-    print(len(game.possibleMove("X")))
-    game.printTable()
-    #while(game.winnerChecker()):
-    #    makeAMove(game,game.player2)
-    #    makeAMove(game,game.player)
+    
+    makeAMove(game,game.player)
+    
+    while(not game.winnerChecker()):
+       makeAMove(game,game.player2)
+       makeAMove(game,game.player)
     print("Kraj igre")
 
     
