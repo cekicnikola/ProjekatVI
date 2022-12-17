@@ -37,7 +37,7 @@ class GameInfo:
             stdout.write(self.letter[z] + " ") 
         print()      
         for i in range(0,self.rows):
-            stdout.write(str(i)+ "| ") #menjao sam +1 kod i
+            stdout.write(str(i+1)+ "| ") #menjao sam +1 kod i
             for j in range(0,self.columns):
                 if(self.table[i][j]==0):
                     stdout.write("*" + " ")
@@ -82,22 +82,24 @@ class GameInfo:
     def possibleMove(self, player):
         moveX = []
         moveY = []
-        coord = []
+
         if(player == "X"):
             for i in range(0,self.rows-1):
                 for j in range(0,self.columns):            
-                    if(self.isValidMove(i-1,j,"X")):
-                        coord.append(i)
-                        coord.append(j)
-                        moveX.append(coord)
+                    coord = []    
+                    if(self.isValidMove(i-1,j,"X")):         
+                        coord.append(i+1)
+                        coord.append(j+1)
+                        moveX.append(coord)                        
             return moveX
         if(player == "O"):
             for i in range(self.rows):
                 for j in range(self.columns-1):            
-                    if(self.isValidMove(i,j-1,"O")):
-                        coord.append(i)
-                        coord.append(j)
-                        moveY.append(coord)
+                    coord = []    
+                    if(self.isValidMove(i,j-1,"X")):         
+                        coord.append(i+1)
+                        coord.append(j+1)
+                    moveY.append(coord)                        
             return moveY
 
 
@@ -170,10 +172,18 @@ def main():
     game=GameInfo(dim[0],dim[1],player[0],player[1],player[1])
     game.printTable()
     print(game.possibleMove("X"))
-    makeAMove(game,game.player)
-    while(game.winnerChecker()):
-        makeAMove(game,game.player2)
-        makeAMove(game,game.player)
+    print(len(game.possibleMove("X")))
+    #makeAMove(game,game.player)
+    move(game, game.player,1,"a")
+    move(game, game.player,1,"h")
+    move(game, game.player,5,"e")
+    move(game, game.player,7,"h")
+    print(game.possibleMove("X"))
+    print(len(game.possibleMove("X")))
+    game.printTable()
+    #while(game.winnerChecker()):
+    #    makeAMove(game,game.player2)
+    #    makeAMove(game,game.player)
     print("Kraj igre")
 
     
