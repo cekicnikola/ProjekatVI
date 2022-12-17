@@ -79,6 +79,28 @@ class GameInfo:
                         self.winner=False
         return self.winner
 
+    def possibleMove(self, player):
+        moveX = []
+        moveY = []
+        coord = []
+        if(player == "X"):
+            for i in range(0, self.rows):
+                for j in range(0, self.columns):            
+                    if(self.isValidMove(i,j,"X")):
+                        coord.append(i)
+                        coord.append(j)
+                        moveX.append(coord)
+            return moveX
+        if(player == "O"):
+            for i in range(0, self.rows):
+                for j in range(0, self.columns):            
+                    if(self.isValidMove(i,j,"O")):
+                        coord.append(i)
+                        coord.append(j)
+                        moveY.append(coord)
+            return moveY
+
+
 
 def move(g:GameInfo,player,row,column):
     col=g.letter.index(column)
