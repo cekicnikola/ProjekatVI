@@ -47,23 +47,19 @@ class GameInfo:
                     stdout.write("O" + " ")
             print()
 
-    def isValidMove(self, row, colu, player):
+    def isValidMove(self, row, colu, player)->tuple[bool,str]:
         if(player == "X"):      #Validacija za X
             if(row > self.rows or row+1 > self.rows):
-                print("Unete koordinate su van domasaja table!")
-                return False
+                return (False,"Unete koordinate su van domasaja table!")
             elif (self.table[row][colu] != 0 or self.table[row+1][colu] != 0):
-                print("Unete koordinate su zauzete!")
-                return False
-            return True
+                return (False,"Unete koordinate su zauzete!")
+            return (True,"Koordinate su ispravne")
         elif(player == "O"):    #Validacija za O
             if(colu > self.columns or colu+1 > self.columns):
-                print("Unete koordinate su van domasaja table!")
-                return False
+                return (False,"Unete koordinate su van domasaja table!")
             elif (self.table[row][colu] != 0 or self.table[row][colu+1] != 0):
-                print("Unete koordinate su zauzete!")
-                return False
-            return True
+                return (False,"Unete koordinate su zauzete!")
+            return (True,"Koordinate su ispravne")
 
     def winnerChecker(self)->bool:
         self.winner=True
@@ -87,7 +83,7 @@ class GameInfo:
             for i in range(0,self.rows-1):
                 for j in range(0,self.columns):            
                     coord = []    
-                    if(self.isValidMove(i-1,j,"X")):         
+                    if(self.isValidMove(i-1,j,"X")[0]):         
                         coord.append(i+1)
                         coord.append(j+1)
                         moveX.append(coord)                        
@@ -96,7 +92,7 @@ class GameInfo:
             for i in range(self.rows):
                 for j in range(self.columns-1):            
                     coord = []    
-                    if(self.isValidMove(i,j-1,"X")):         
+                    if(self.isValidMove(i,j-1,"X")[0]):         
                         coord.append(i+1)
                         coord.append(j+1)
                     moveY.append(coord)                        
@@ -171,14 +167,14 @@ def main():
     player=chooseFirst()
     game=GameInfo(dim[0],dim[1],player[0],player[1],player[1])
     game.printTable()
-    print(game.possibleMove("X"))
-    print(len(game.possibleMove("X")))
+    
     #makeAMove(game,game.player)
     move(game, game.player,1,"a")
-    move(game, game.player,1,"h")
-    move(game, game.player,5,"e")
-    move(game, game.player,7,"h")
-    print(game.possibleMove("X"))
+    move(game, game.player,2,"b")
+    move(game, game.player,2,"c")
+    print("Broj poteza pre prvog poteza")
+    print(len(game.possibleMove("X")))
+    print("Broj poteza nakon prvog poteza")
     print(len(game.possibleMove("X")))
     game.printTable()
     #while(game.winnerChecker()):
