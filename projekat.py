@@ -37,7 +37,7 @@ class GameInfo:
             stdout.write(self.letter[z] + " ") 
         print()      
         for i in range(0,self.rows):
-            stdout.write(str(i+1)+ "| ")
+            stdout.write(str(i)+ "| ") #menjao sam +1 kod i
             for j in range(0,self.columns):
                 if(self.table[i][j]==0):
                     stdout.write("*" + " ")
@@ -48,7 +48,7 @@ class GameInfo:
             print()
 
     def isValidMove(self, row, colu, player):
-        if(player == "X"): #Validacija za X
+        if(player == "X"):      #Validacija za X
             if(row > self.rows or row+1 > self.rows):
                 print("Unete koordinate su van domasaja table!")
                 return False
@@ -84,17 +84,17 @@ class GameInfo:
         moveY = []
         coord = []
         if(player == "X"):
-            for i in range(0, self.rows-1):
-                for j in range(0, self.columns-1):            
-                    if(self.isValidMove(i,j,"X")):
+            for i in range(0,self.rows-1):
+                for j in range(0,self.columns):            
+                    if(self.isValidMove(i-1,j,"X")):
                         coord.append(i)
                         coord.append(j)
                         moveX.append(coord)
             return moveX
         if(player == "O"):
-            for i in range(0, self.rows-1):
-                for j in range(0, self.columns-1):            
-                    if(self.isValidMove(i,j,"O")):
+            for i in range(self.rows):
+                for j in range(self.columns-1):            
+                    if(self.isValidMove(i,j-1,"O")):
                         coord.append(i)
                         coord.append(j)
                         moveY.append(coord)
