@@ -55,6 +55,7 @@ class GameInfo:
             elif (self.table[row][colu] != 0 or self.table[row+1][colu] != 0):
                 print("Unete koordinate su zauzete!")
                 return False
+            return True
         elif(player == "O"):    #Validacija za O
             if(colu > self.columns or colu+1 > self.columns):
                 print("Unete koordinate su van domasaja table!")
@@ -81,16 +82,34 @@ class GameInfo:
 
 def move(g:GameInfo,player,row,column):
     col=g.letter.index(column)
-    convertedRow=row-1
+    convertedRow=int(row-1)
     if(player=="X"):
-        if(g.isValidMove(convertedRow,col)):
+        if(g.isValidMove(convertedRow,col,"X")):
             g.table[convertedRow][col]="X"
-            g.table[convertedRow+1][col]="X"
+            g.table[row][col]="X"
     elif(player=="O"):
-        if(g.isValidMove(convertedRow,col)):
+        if(g.isValidMove(convertedRow,col,"O")):
             g.table[convertedRow][col]="O"
             g.table[convertedRow][col+1]="O"
-         
+def makeAMove(g:GameInfo,player):
+    igrac=""
+    potez=""
+    if(player=="X"):
+        igrac="prvi"
+        potez="vertikalno"
+    elif(player=="O"):
+        igrac="drugi"
+        potez="horizontalno"
+
+    print(f"Na potezu je {igrac} igrac, koji igra {potez}. Izaberite koordinate poteza. Unesite vrednost vrste: ")
+    r=int(input("Unos vrste: "))
+    print("Unesite vrednost kolone:")
+    c=str(input("Unos kolone: "))
+    move(g,player,r,c)
+    g.printTable()
+    print(f"Potez iznad je odigrao {igrac} igrac ")
+    
+
 def sizeOfTable()->tuple[int,int]:
     print()
     print()
@@ -103,7 +122,8 @@ def sizeOfTable()->tuple[int,int]:
     return (rows,columns)
 
 def chooseFirst()->tuple[str,str]:
-    twoPlayers=int(input("Unesite 1, ako zelite da igrate protiv racunara. U suprotnom 0, ako zelite da igru igraju dva igraca."))
+    print("Unesite 1, ako zelite da igrate protiv racunara. U suprotnom 0, ako zelite da igru igraju dva igraca.")
+    twoPlayers=int(input("Unos:"))
     if(twoPlayers==0):
         return ("X","O")
     else:
@@ -125,12 +145,17 @@ def main():
     dim=sizeOfTable()
     player=chooseFirst()
     game=GameInfo(dim[0],dim[1],player[0],player[1],player[1])
-    
-    
-    move(game,"X",1,"b")
-    move(game,"O",8,"b")
     game.printTable()
-    print(game.winnerChecker())
+
+    makeAMove(game,game.player)
+    while(game.winnerChecker()):
+        makeAMove(game,game.player2)
+        makeAMove(game,game.player)
+    print("Kraj igre")
+
+    
+    
+    
 main()
 
 
