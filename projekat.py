@@ -83,7 +83,7 @@ class GameInfo:
             for i in range(0,self.rows-1):
                 for j in range(0,self.columns):            
                     coord = []    
-                    if(self.isValidMove(i-1,j,"X")[0]):         
+                    if(self.isValidMove(i,j,"X")[0]):         
                         coord.append(i+1)
                         coord.append(j+1)
                         moveX.append(coord)                        
@@ -92,10 +92,10 @@ class GameInfo:
             for i in range(self.rows):
                 for j in range(self.columns-1):            
                     coord = []    
-                    if(self.isValidMove(i,j-1,"X")[0]):         
+                    if(self.isValidMove(i,j,"X")[0]):         
                         coord.append(i+1)
                         coord.append(j+1)
-                    moveY.append(coord)                        
+                        moveY.append(coord)                        
             return moveY
 
 
@@ -167,13 +167,13 @@ def main():
     player=chooseFirst()
     game=GameInfo(dim[0],dim[1],player[0],player[1],player[1])
     game.printTable()
-    
+    print("Broj poteza pre prvog poteza")
+    print(len(game.possibleMove("X")))
     #makeAMove(game,game.player)
     move(game, game.player,1,"a")
     move(game, game.player,2,"b")
     move(game, game.player,2,"c")
-    print("Broj poteza pre prvog poteza")
-    print(len(game.possibleMove("X")))
+
     print("Broj poteza nakon prvog poteza")
     print(len(game.possibleMove("X")))
     game.printTable()
