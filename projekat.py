@@ -37,7 +37,10 @@ class GameInfo:
             stdout.write(self.letter[z] + " ") 
         print()      
         for i in range(0,self.rows):
-            stdout.write(str(i+1)+ "| ") #menjao sam +1 kod i
+            if(i<9):
+                stdout.write(str(i+1)+ " | ")
+            else:
+                stdout.write(str(i+1)+ "| ")
             for j in range(0,self.columns):
                 if(self.table[i][j]==0):
                     stdout.write("*" + " ")
