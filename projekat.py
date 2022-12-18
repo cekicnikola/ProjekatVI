@@ -85,7 +85,7 @@ class GameInfo:
             for i in range(self.rows):
                 for j in range(self.columns-1):            
                     coord = []    
-                    if(self.isValidMove(i,j,"X")[0]):         
+                    if(self.isValidMove(i,j,"O")[0]):         
                         coord.append(i+1)
                         coord.append(j+1)
                         moveY.append(coord)                        
@@ -167,7 +167,10 @@ def main():
        makeAMove(game,game.player2)
        makeAMove(game,game.player)
     print("Kraj igre")
-
+    if(len(game.possibleMove(game.player)) !=0):
+        print("Pobednik je prvi igrac")
+    if(len(game.possibleMove(game.player2)) !=0 ):
+        print("Pobednik je drugi igrac")
     
     
     
