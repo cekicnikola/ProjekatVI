@@ -117,12 +117,17 @@ def makeAMove(g:GameInfo,player):
     elif(player=="O"):
         igrac="drugi"
         potez="horizontalno"
-
+    
     print(f"Na potezu je {igrac} igrac, koji igra {potez}. Izaberite koordinate poteza. Unesite vrednost vrste: ")
-    r=int(input("Unos vrste: "))
-    print("Unesite vrednost kolone:")
+    r=int(input("Unos vrste(mora biti ceo broj): "))
+    print("Unesite vrednost kolone(slovo): ")
     c=str(input("Unos kolone: "))
-    move(g,player,r,c)
+    
+    if(r not in range(0,g.rows) or (c not in g.letter)):
+        return makeAMove(g,player)
+    else:
+        move(g,player,r,c)
+    
     g.printTable()
     print(f"Potez iznad je odigrao {igrac} igrac ")
     
