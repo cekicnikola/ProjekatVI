@@ -32,7 +32,7 @@ class GameInfo:
 
 
     def printTable(self):
-        stdout.write("   ")
+        stdout.write("    ")
         for z in range(0,self.columns):
             stdout.write(self.letter[z] + " ") 
         print()      
