@@ -131,7 +131,7 @@ def makeAMove(g:GameInfo,player):
     g.printTable()
     print(f"Potez iznad je odigrao {igrac} igrac ")
     
-
+  
 def sizeOfTable()->tuple[int,int]:
     print()
     print()
