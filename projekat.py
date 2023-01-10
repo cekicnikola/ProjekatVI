@@ -100,11 +100,11 @@ def move(g:GameInfo,player,row,column):
     col=g.letter.index(column)
     convertedRow=int(row-1)
     if(player=="X"):
-        if(g.isValidMove(convertedRow,col,"X")):
+        if(g.isValidMove(convertedRow,col,"X")[0]):
             g.table[convertedRow][col]="X"
             g.table[row][col]="X"
     elif(player=="O"):
-        if(g.isValidMove(convertedRow,col,"O")):
+        if(g.isValidMove(convertedRow,col,"O")[0]):
             g.table[convertedRow][col]="O"
             g.table[convertedRow][col+1]="O"
 
@@ -122,18 +122,25 @@ def makeAMove(g:GameInfo,player):
     r=int(input("Unos vrste(mora biti ceo broj): "))
     print("Unesite vrednost kolone(slovo): ")
     c=str(input("Unos kolone: "))
-    
-    if(r not in range(0,g.rows) or (c not in g.letter)):
+   
+    #greska=uslov[1]
+    col=g.letter.index(c)
+    filledValue= g.isValidMove(r-1,col,player)
+    if((r not in range(0,g.rows + 1) or (c not in g.letter)) or not(filledValue[0]) ):
         return makeAMove(g,player)
     else:
         move(g,player,r,c)
+        
     
     g.printTable()
     print(f"Potez iznad je odigrao {igrac} igrac ")
+    print("")
     
   
 def sizeOfTable()->tuple[int,int]:
     print()
+
+    
     print()
     print("------------------Dobrodosli u Domineering------------------")
     print("Molimo Vas unesite dimenzije table.")
@@ -169,11 +176,11 @@ def main():
     game=GameInfo(dim[0],dim[1],player[0],player[1],player[1])
     game.printTable()
     
-    makeAMove(game,game.player)
     
     while(not game.winnerChecker()):
-       makeAMove(game,game.player2)
        makeAMove(game,game.player)
+       makeAMove(game,game.player2)
+       
     print("Kraj igre")
     if(len(game.possibleMove(game.player)) !=0):
         print("Pobednik je prvi igrac")
