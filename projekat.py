@@ -1,6 +1,7 @@
 
+from shutil import copystat
 from sys import stdout
-
+from copy import copy, deepcopy
 
 """
 
@@ -65,40 +66,75 @@ class GameInfo:
             return (True,"Koordinate su ispravne")
 
     def winnerChecker(self)->bool:
-        if(len(self.possibleMove("X"))==0 or len(self.possibleMove("O"))==0):
+        if(len(self.possibleMoves("X"))==0 or len(self.possibleMoves("O"))==0):
             return True
         else:
             return False
         
 
-    def possibleMove(self, player):
+    def possibleMoves(self, player):
         moveX = []
         moveY = []
 
         if(player == "X"):
             for i in range(0,self.rows-1):
                 for j in range(0,self.columns):            
-                    coord = []    
+                    coord=[]
                     if(self.isValidMove(i,j,"X")[0]):         
-                        coord.append(i+1)
-                        coord.append(j+1)
-                        moveX.append(coord)                        
+                        coord.append(i) 
+                        coord.append(j)    
+                        moveX.append(coord)                       
             return moveX
         if(player == "O"):
             for i in range(self.rows):
-                for j in range(self.columns-1):            
-                    coord = []    
+                for j in range(self.columns-1): 
+                    coord=[]                                  
                     if(self.isValidMove(i,j,"O")[0]):         
-                        coord.append(i+1)
-                        coord.append(j+1)
-                        moveY.append(coord)                        
+                        coord.append(i) 
+                        coord.append(j)    
+                        moveY.append(coord)                       
             return moveY
+
+    def remove(self, player, row, column):
+        if(player=="X"):
+                self.table[row][column]=0
+                self.table[row+1][column]=0
+        elif(player=="O"):
+                self.table[row][column]=0
+                self.table[row][column+1]=0
+
+
+
+
+def emptyFieldX(g:GameInfo):
+    allX = []
+    for i in range(g.rows-1):
+        for j in range(g.columns):
+            coord = []
+            if(g.table[i][j] == 0 and g.table[i+1][j] == 0):
+                coord.append(i)
+                coord.append(j)
+                allX.append(coord)
+    return allX
+def emptyFieldO(g:GameInfo):
+    allY = []
+    for i in range(g.rows):
+        for j in range(g.columns-1):
+            coord = []
+            if(g.table[i][j] == 0 and g.table[i][j+1] == 0):
+                coord.append(i)
+                coord.append(j)
+                allY.append(coord)
+    return allY
+
+
 
 
 
 def move(g:GameInfo,player,row,column):
     col=g.letter.index(column)
     convertedRow=int(row-1)
+    
     if(player=="X"):
         if(g.isValidMove(convertedRow,col,"X")[0]):
             g.table[convertedRow][col]="X"
@@ -107,6 +143,33 @@ def move(g:GameInfo,player,row,column):
         if(g.isValidMove(convertedRow,col,"O")[0]):
             g.table[convertedRow][col]="O"
             g.table[convertedRow][col+1]="O"
+
+def compMove(g:GameInfo, row, column):
+    if(g.AIplayer=="X"):
+        if(g.isValidMove(row,column,"X")[0]):
+            g.table[row][column]="X"
+            g.table[row+1][column]="X"
+    elif(g.AIplayer=="O"):
+        if(g.isValidMove(row,column,"O")[0]):
+            g.table[row][column]="O"
+            g.table[row][column+1]="O"
+          
+    return g.table
+
+def fakeMove(g:GameInfo,pos,igrac):
+        return [[igrac if pos[0]==j and pos[1]==i else g.table[j][i] for i in range(0, g.columns) ] for j in range(0,g.rows)]
+
+def allMoves(g:GameInfo):
+    move = []
+    for i in range(g.rows):
+        for j in range(g.columns):            
+            coord = []    
+            if(g.table[i][j] == 0):         
+                coord.append(i+1)
+                coord.append(j+1)
+                move.append(coord)                        
+    return move
+
 
 def makeAMove(g:GameInfo,player):
     igrac=""
@@ -131,7 +194,6 @@ def makeAMove(g:GameInfo,player):
     else:
         move(g,player,r,c)
         
-    
     g.printTable()
     print(f"Potez iznad je odigrao {igrac} igrac ")
     print("")
@@ -154,18 +216,73 @@ def chooseFirst()->tuple[str,str]:
     print("Unesite 1, ako zelite da igrate protiv racunara. U suprotnom 0, ako zelite da igru igraju dva igraca.")
     twoPlayers=int(input("Unos:"))
     if(twoPlayers==0):
-        return ("X","O")
+        return ("X","O",False)
     else:
-
-        print("Unesite 1, ako Vi zelite da igrate prvi. U suprotnom 0, ako igra racunar")
+        print("Unesite 1, ako Vi zelite da igrate prvi. U suprotnom 0, da racunar igra prvi")
         value=int(input())
         if(value==1):
-            return ("X","O")
+            return ("X","O",True)
         elif(value==0):
-            return("O","X")
+            return("O","X",True)
         else:
             print("Unesite ponovo vrednosti")
             return chooseFirst()
+
+
+def getPosibilitiesHeur(g:GameInfo):
+    return len(g.possibleMoves("X"))-len(g.possibleMoves("O"))
+
+def max_stanje(lsv):
+    return max(lsv, key=lambda x: x[1])
+
+def min_stanje(lsv):
+    return min(lsv, key=lambda x: x[1])   
+
+def minimax(stanje:GameInfo,state, dubina, moj_potez, potez = None):
+    copyGame:GameInfo = deepcopy(stanje)
+    igrac = "X" if moj_potez else "O"
+    funkcija_min_max = max_stanje if moj_potez else min_stanje
+    lista_poteza = list(copyGame.possibleMoves(igrac))
+    if dubina == 0 or len(lista_poteza) == 0:
+        return (potez, getPosibilitiesHeur(copyGame))
+    return funkcija_min_max([minimax(copyGame,compMove(copyGame, x[0], x[1]), dubina - 1, not moj_potez, x ) for x in lista_poteza])
+
+
+def miniMaxAlfaBetaOdsecanje(stanje:GameInfo, igrac, dubina:int = 0, alfa = None, beta= None):
+    copyGame:GameInfo = deepcopy(stanje)
+    copyGame.minMax = []
+    if alfa == None: alpha = (copyGame, -stanje.rows*stanje.columns)
+    if beta == None:  beta = (copyGame,  stanje.rows*stanje.columns)
+    
+    if (igrac == "X"):
+        return maxValue(copyGame, dubina, alpha, beta, igrac)
+    else:
+        return minValue(copyGame, dubina, alpha, beta, igrac)
+
+
+def maxValue(stanje, dubina, alfa, beta, igrac):
+    listaPoteza = stanje.possibleMoves(igrac)
+    
+    if dubina == 0 or len(listaPoteza) == 0:
+        return (stanje, getPosibilitiesHeur(stanje, "X", "O"))
+    else:
+        for potez in listaPoteza:  
+            beta = min( beta, maxValue(potez, dubina - 1, alfa , beta), key = lambda x:x[1])
+            if(alfa[1] > beta[1]):
+                return beta
+    return alfa
+   
+def minValue(stanje, dubina, alfa, beta, igrac):
+    listaPoteza = stanje.possibleMoves(igrac)
+    if dubina == 0 or len(listaPoteza) == 0:
+        return (stanje, getPosibilitiesHeur(stanje, "X", "O"))
+    else:
+        for potez in listaPoteza:  
+            beta = min( beta, maxValue(potez, dubina - 1, alfa , beta), key = lambda x:x[1])
+            if(beta[1] < alfa[1]):
+                
+                return alfa
+    return beta
 
 
 
@@ -176,17 +293,44 @@ def main():
     game=GameInfo(dim[0],dim[1],player[0],player[1],player[1])
     game.printTable()
     
+    if(player[2]):
+        if(game.AIplayer == "X"):
+            while(not game.winnerChecker()):  
+                move=minimax(game,game.table,3, True)
+                naj = move[0] if type(move[0]) is list else (0, 0)
+                print(move)
+                compMove(game,naj[0], naj[1])     
+                makeAMove(game,game.player)
+        else:
+            while(not game.winnerChecker()):  
+                makeAMove(game,game.player)      
+                move=minimax(game,game.table,3, True)
+                naj = move[0] if type(move[0]) is list else (0, 0)
+                print(move)
+                compMove(game,naj[0], naj[1])         
+    else:
+        while(not game.winnerChecker()):         
+            makeAMove(game,game.player)
+            print(game.possibleMoves(game.player))      
+            makeAMove(game,game.player2)    
     
-    while(not game.winnerChecker()):
-       makeAMove(game,game.player)
-       makeAMove(game,game.player2)
        
-    print("Kraj igre")
-    if(len(game.possibleMove(game.player)) !=0):
-        print("Pobednik je prvi igrac")
-    if(len(game.possibleMove(game.player2)) !=0 ):
-        print("Pobednik je drugi igrac")
-    
+    if(not player[2]):
+        if(len(game.possibleMoves(game.player)) == len(game.possibleMoves(game.player2)) ==0):
+            print("Pobednik je igrac koji je odigrao poslednji potez.")
+        if(len(game.possibleMoves(game.player)) !=0):
+            print("Pobednik je igrac koji igra vertikalno.")
+        if(len(game.possibleMoves(game.player2)) !=0 ):
+            print("Pobednik je igrac koji igra horizontalno.")
+        print("===============KRAJ IGRE===============")
+    else:
+        if(len(game.possibleMoves(game.AIplayer)) == len(game.possibleMoves(game.player)) ==0):
+            print("Pobednik je igrac koji je odigrao poslednji potez.")
+        if(len(game.possibleMoves(game.AIplayer)) !=0):
+            print("Pobednik je racunar.")
+        if(len(game.possibleMoves(game.player)) !=0 ):
+            print("Pobednik je igrac.")
+        print("===============KRAJ IGRE===============")
     
     
 main()
