@@ -149,11 +149,13 @@ def compMove(g:GameInfo, row, column):
         if(g.isValidMove(row,column,"X")[0]):
             g.table[row][column]="X"
             g.table[row+1][column]="X"
+
     elif(g.AIplayer=="O"):
         if(g.isValidMove(row,column,"O")[0]):
             g.table[row][column]="O"
             g.table[row][column+1]="O"
-          
+     
+    
     return g.table
 
 def fakeMove(g:GameInfo,pos,igrac):
@@ -242,7 +244,10 @@ def minimax(stanje:GameInfo,state, dubina, moj_potez, potez = None):
     copyGame:GameInfo = deepcopy(stanje)
     igrac = "X" if moj_potez else "O"
     funkcija_min_max = max_stanje if moj_potez else min_stanje
-    lista_poteza = list(copyGame.possibleMoves(igrac))
+    if(igrac == "X"):
+        lista_poteza = list(emptyFieldX(copyGame))
+    elif(igrac =="O"):
+        lista_poteza = list(emptyFieldO(copyGame))    #treba flag da se unese za upis u polje
     if dubina == 0 or len(lista_poteza) == 0:
         return (potez, getPosibilitiesHeur(copyGame))
     return funkcija_min_max([minimax(copyGame,compMove(copyGame, x[0], x[1]), dubina - 1, not moj_potez, x ) for x in lista_poteza])
@@ -299,8 +304,11 @@ def main():
                 move=minimax(game,game.table,3, True)
                 naj = move[0] if type(move[0]) is list else (0, 0)
                 print(move)
-                compMove(game,naj[0], naj[1])     
+                compMove(game,naj[0], naj[1])     #
+                game.printTable() 
                 makeAMove(game,game.player)
+ #
+                
         else:
             while(not game.winnerChecker()):  
                 makeAMove(game,game.player)      
