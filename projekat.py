@@ -53,15 +53,15 @@ class GameInfo:
 
     def isValidMove(self, row, colu, player)->tuple[bool,str]:
         if(player == "X"):      #Validacija za X
-            if(row > self.rows or row+1 > self.rows):
+            if(row > self.rows or row+1 > self.rows-1):
                 return (False,"Unete koordinate su van domasaja table!")
             elif (self.table[row][colu] != 0 or self.table[row+1][colu] != 0):
                 return (False,"Unete koordinate su zauzete!")
             return (True,"Koordinate su ispravne")
         elif(player == "O"):    #Validacija za O
-            if(colu > self.columns or colu+1 > self.columns):
+            if(colu > self.columns or colu-1 < 0):
                 return (False,"Unete koordinate su van domasaja table!")
-            elif (self.table[row][colu] != 0 or self.table[row][colu+1] != 0):
+            elif (self.table[row][colu] != 0 or self.table[row][colu-1] != 0):
                 return (False,"Unete koordinate su zauzete!")
             return (True,"Koordinate su ispravne")
 
@@ -77,8 +77,8 @@ class GameInfo:
         moveY = []
 
         if(player == "X"):
-            for i in range(0,self.rows-1):
-                for j in range(0,self.columns):            
+            for i in range(self.rows-1):
+                for j in range(self.columns):            
                     coord=[]
                     if(self.isValidMove(i,j,"X")[0]):         
                         coord.append(i) 
@@ -87,7 +87,7 @@ class GameInfo:
             return moveX
         if(player == "O"):
             for i in range(self.rows):
-                for j in range(self.columns-1): 
+                for j in range(self.columns): 
                     coord=[]                                  
                     if(self.isValidMove(i,j,"O")[0]):         
                         coord.append(i) 
@@ -101,31 +101,30 @@ class GameInfo:
                 self.table[row+1][column]=0
         elif(player=="O"):
                 self.table[row][column]=0
-                self.table[row][column+1]=0
+                self.table[row][column-1]=0
 
+    def emptyFieldX(self, tabla):
+        allX = []
+        for i in range(self.rows-1):
+            for j in range(self.columns):
+                coord = []
+                if((tabla[i][j] == 0 and tabla[i+1][j] == 0) and self.isValidMove(i,j,"X")[0]):                     
+                    coord.append(i)
+                    coord.append(j)
+                    allX.append(coord)                        
+        return allX
 
+    def emptyFieldO(self, tabla):
+        allY = []
+        for i in range(self.rows):
+            for j in range(self.columns):
+                coord = []
+                if((tabla[i][j] == 0 and tabla[i][j-1] == 0) and self.isValidMove(i,j,"O")[0]):                    
+                    coord.append(i)
+                    coord.append(j)
+                    allY.append(coord)        
+        return allY
 
-
-def emptyFieldX(g:GameInfo):
-    allX = []
-    for i in range(g.rows-1):
-        for j in range(g.columns):
-            coord = []
-            if(g.table[i][j] == 0 and g.table[i+1][j] == 0):
-                coord.append(i)
-                coord.append(j)
-                allX.append(coord)
-    return allX
-def emptyFieldO(g:GameInfo):
-    allY = []
-    for i in range(g.rows):
-        for j in range(g.columns-1):
-            coord = []
-            if(g.table[i][j] == 0 and g.table[i][j+1] == 0):
-                coord.append(i)
-                coord.append(j)
-                allY.append(coord)
-    return allY
 
 
 
@@ -142,35 +141,32 @@ def move(g:GameInfo,player,row,column):
     elif(player=="O"):
         if(g.isValidMove(convertedRow,col,"O")[0]):
             g.table[convertedRow][col]="O"
-            g.table[convertedRow][col+1]="O"
+            g.table[convertedRow][col-1]="O"
 
-def compMove(g:GameInfo, row, column):
-    if(g.AIplayer=="X"):
+def compMove(g:GameInfo, player, row, column):
+    if(player=="X"):
         if(g.isValidMove(row,column,"X")[0]):
             g.table[row][column]="X"
             g.table[row+1][column]="X"
 
-    elif(g.AIplayer=="O"):
+    elif(player=="O"):
         if(g.isValidMove(row,column,"O")[0]):
             g.table[row][column]="O"
-            g.table[row][column+1]="O"
-     
-    
+            g.table[row][column-1]="O"
+
     return g.table
 
-def fakeMove(g:GameInfo,pos,igrac):
-        return [[igrac if pos[0]==j and pos[1]==i else g.table[j][i] for i in range(0, g.columns) ] for j in range(0,g.rows)]
+def makeACompMove(g:GameInfo,player,row, column):
+    filledValue= g.isValidMove(row,column,player)
+    if( not(filledValue[0])):
+        listOfCoords=g.possibleMoves(player)
+        coords= listOfCoords[0]
+        compMove(g,player,coords[0],coords[1])
+        
+    else:
+        compMove(g, player,row, column)
+        return g.table
 
-def allMoves(g:GameInfo):
-    move = []
-    for i in range(g.rows):
-        for j in range(g.columns):            
-            coord = []    
-            if(g.table[i][j] == 0):         
-                coord.append(i+1)
-                coord.append(j+1)
-                move.append(coord)                        
-    return move
 
 
 def makeAMove(g:GameInfo,player):
@@ -199,7 +195,23 @@ def makeAMove(g:GameInfo,player):
     g.printTable()
     print(f"Potez iznad je odigrao {igrac} igrac ")
     print("")
-    
+
+
+
+def fakeMove(g:GameInfo,pos,igrac):
+        return [[igrac if pos[0]==j and pos[1]==i else g.table[j][i] for i in range(0, g.columns) ] for j in range(0,g.rows)]
+
+def allMoves(g:GameInfo):
+    move = []
+    for i in range(g.rows):
+        for j in range(g.columns):            
+            coord = []    
+            if(g.table[i][j] == 0):         
+                coord.append(i+1)
+                coord.append(j+1)
+                move.append(coord)                        
+    return move
+  
   
 def sizeOfTable()->tuple[int,int]:
     print()
@@ -231,12 +243,14 @@ def chooseFirst()->tuple[str,str]:
             return chooseFirst()
 
 
-def getPosibilitiesHeur(g:GameInfo):
+def getPosibilitiesHeurO(g:GameInfo):
+    return len(g.possibleMoves("O"))-len(g.possibleMoves("X"))
+def getPosibilitiesHeurX(g:GameInfo):
     return len(g.possibleMoves("X"))-len(g.possibleMoves("O"))
 
 def max_stanje(lsv):
     return max(lsv, key=lambda x: x[1])
-
+    
 def min_stanje(lsv):
     return min(lsv, key=lambda x: x[1])   
 
@@ -244,13 +258,30 @@ def minimax(stanje:GameInfo,state, dubina, moj_potez, potez = None):
     copyGame:GameInfo = deepcopy(stanje)
     igrac = "X" if moj_potez else "O"
     funkcija_min_max = max_stanje if moj_potez else min_stanje
-    if(igrac == "X"):
-        lista_poteza = list(emptyFieldX(copyGame))
+    if(igrac == "X"):    
+        lista_poteza = list(copyGame.emptyFieldX(state))    
     elif(igrac =="O"):
-        lista_poteza = list(emptyFieldO(copyGame))    #treba flag da se unese za upis u polje
+        lista_poteza = list(copyGame.emptyFieldO(state)) 
+        
     if dubina == 0 or len(lista_poteza) == 0:
-        return (potez, getPosibilitiesHeur(copyGame))
-    return funkcija_min_max([minimax(copyGame,compMove(copyGame, x[0], x[1]), dubina - 1, not moj_potez, x ) for x in lista_poteza])
+        if(igrac=="X"):
+            return (potez, getPosibilitiesHeurX(copyGame)) ###
+        else: 
+            return (potez, getPosibilitiesHeurO(copyGame))
+    #print(f'za {igrac}:{lista_poteza}')
+    scores=[]
+    for x in lista_poteza:
+        
+        tabla=compMove(copyGame,igrac, x[0] , x[1])
+        scores.append(minimax(copyGame,tabla, dubina - 1, not moj_potez, x ) )
+        copyGame.remove(igrac,x[0],x[1])
+        #print(f'Potez{igrac} {x}')
+
+    """print(scores)
+    print("============================================")"""
+    return funkcija_min_max(scores)
+
+    
 
 
 def miniMaxAlfaBetaOdsecanje(stanje:GameInfo, igrac, dubina:int = 0, alfa = None, beta= None):
@@ -269,7 +300,7 @@ def maxValue(stanje, dubina, alfa, beta, igrac):
     listaPoteza = stanje.possibleMoves(igrac)
     
     if dubina == 0 or len(listaPoteza) == 0:
-        return (stanje, getPosibilitiesHeur(stanje, "X", "O"))
+        return (stanje, getPosibilitiesHeurX(stanje, "X", "O"))
     else:
         for potez in listaPoteza:  
             beta = min( beta, maxValue(potez, dubina - 1, alfa , beta), key = lambda x:x[1])
@@ -280,7 +311,7 @@ def maxValue(stanje, dubina, alfa, beta, igrac):
 def minValue(stanje, dubina, alfa, beta, igrac):
     listaPoteza = stanje.possibleMoves(igrac)
     if dubina == 0 or len(listaPoteza) == 0:
-        return (stanje, getPosibilitiesHeur(stanje, "X", "O"))
+        return (stanje, getPosibilitiesHeurX(stanje, "X", "O"))
     else:
         for potez in listaPoteza:  
             beta = min( beta, maxValue(potez, dubina - 1, alfa , beta), key = lambda x:x[1])
@@ -303,19 +334,21 @@ def main():
             while(not game.winnerChecker()):  
                 move=minimax(game,game.table,3, True)
                 naj = move[0] if type(move[0]) is list else (0, 0)
+
                 print(move)
-                compMove(game,naj[0], naj[1])     #
+                makeACompMove(game,game.AIplayer,naj[0], naj[1])     #
                 game.printTable() 
                 makeAMove(game,game.player)
- #
+
                 
         else:
             while(not game.winnerChecker()):  
                 makeAMove(game,game.player)      
-                move=minimax(game,game.table,3, True)
+                move=minimax(game,game.table,3, False)
                 naj = move[0] if type(move[0]) is list else (0, 0)
                 print(move)
-                compMove(game,naj[0], naj[1])         
+                makeACompMove(game,game.AIplayer,naj[0], naj[1])  
+                game.printTable()        
     else:
         while(not game.winnerChecker()):         
             makeAMove(game,game.player)
