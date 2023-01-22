@@ -281,43 +281,58 @@ def minimax(stanje:GameInfo,state, dubina, moj_potez, potez = None):
     print("============================================")"""
     return funkcija_min_max(scores)
 
-    
-
-
-def miniMaxAlfaBetaOdsecanje(stanje:GameInfo, igrac, dubina:int = 0, alfa = None, beta= None):
+def miniMaxAlfaBetaOdsecanje(stanje:GameInfo, igrac, dubina:int = 0, alpha=(None,-55000), beta=(None,55000)):
     copyGame:GameInfo = deepcopy(stanje)
     copyGame.minMax = []
-    if alfa == None: alpha = (copyGame, -stanje.rows*stanje.columns)
-    if beta == None:  beta = (copyGame,  stanje.rows*stanje.columns)
+    #if alfa == None: alpha = (copyGame, -stanje.rows*stanje.columns)
+    #if beta == None:  beta = (copyGame,  stanje.rows*stanje.columns)
     
-    if (igrac == "X"):
-        return maxValue(copyGame, dubina, alpha, beta, igrac)
+    if (igrac):
+        return maxState(copyGame, dubina, alpha, beta)
     else:
-        return minValue(copyGame, dubina, alpha, beta, igrac)
+        return minState(copyGame, dubina, alpha, beta)
 
-
-def maxValue(stanje, dubina, alfa, beta, igrac):
-    listaPoteza = stanje.possibleMoves(igrac)
-    
-    if dubina == 0 or len(listaPoteza) == 0:
-        return (stanje, getPosibilitiesHeurX(stanje, "X", "O"))
+def maxState(stanje:GameInfo, dubina, alpha,beta,potez = None):
+       
+    lista_poteza = list(stanje.emptyFieldX(stanje.table))    
+            
+    if dubina == 0 or lista_poteza is None or len(lista_poteza) == 0:
+        
+        return (potez, getPosibilitiesHeurX(stanje)) ###
+       
+    #print(f'za {igrac}:{lista_poteza}')
     else:
-        for potez in listaPoteza:  
-            beta = min( beta, maxValue(potez, dubina - 1, alfa , beta), key = lambda x:x[1])
-            if(alfa[1] > beta[1]):
+        for x in lista_poteza:
+        
+            compMove(stanje,"X", x[0] , x[1])
+            alpha=max(alpha,minState(stanje,dubina-1,alpha,beta, x if potez is None else potez),key = lambda y:y[1]) 
+            stanje.remove("X",x[0],x[1])
+            if alpha[1] >= beta[1]:
                 return beta
-    return alfa
+
+    return alpha
+
+    
+
    
-def minValue(stanje, dubina, alfa, beta, igrac):
-    listaPoteza = stanje.possibleMoves(igrac)
-    if dubina == 0 or len(listaPoteza) == 0:
-        return (stanje, getPosibilitiesHeurX(stanje, "X", "O"))
+def minState(stanje:GameInfo, dubina, alpha,beta,potez = None):
+       
+    lista_poteza = list(stanje.emptyFieldO(stanje.table))    
+      
+    if dubina == 0 or lista_poteza is None or len(lista_poteza) == 0:
+        
+        return (potez, getPosibilitiesHeurO(stanje)) ###
+       
+    #print(f'za {igrac}:{lista_poteza}')
     else:
-        for potez in listaPoteza:  
-            beta = min( beta, maxValue(potez, dubina - 1, alfa , beta), key = lambda x:x[1])
-            if(beta[1] < alfa[1]):
-                
-                return alfa
+        for x in lista_poteza:
+        
+            compMove(stanje,"O", x[0] , x[1])
+            beta=min(beta,maxState(stanje,dubina-1,alpha,beta, x if potez is None else potez),key = lambda y:y[1]) 
+            stanje.remove("O",x[0],x[1])
+            if beta[1] <= alpha[1]:
+                return alpha
+
     return beta
 
 
@@ -331,24 +346,26 @@ def main():
     
     if(player[2]):
         if(game.AIplayer == "X"):
+            potez=True
             while(not game.winnerChecker()):  
-                move=minimax(game,game.table,3, True)
+                move=miniMaxAlfaBetaOdsecanje(game,potez,4)
                 naj = move[0] if type(move[0]) is list else (0, 0)
 
                 print(move)
                 makeACompMove(game,game.AIplayer,naj[0], naj[1])     #
                 game.printTable() 
                 makeAMove(game,game.player)
-
                 
         else:
+            potez=False
             while(not game.winnerChecker()):  
                 makeAMove(game,game.player)      
-                move=minimax(game,game.table,3, False)
+                move=miniMaxAlfaBetaOdsecanje(game,potez,3)
                 naj = move[0] if type(move[0]) is list else (0, 0)
                 print(move)
                 makeACompMove(game,game.AIplayer,naj[0], naj[1])  
-                game.printTable()        
+                game.printTable()   
+                    
     else:
         while(not game.winnerChecker()):         
             makeAMove(game,game.player)
