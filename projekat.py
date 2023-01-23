@@ -440,8 +440,7 @@ def main():
                     
     else:
         while(not game.winnerChecker()):         
-            makeAMove(game,game.player)
-            print(game.possibleMoves(game.player))      
+            makeAMove(game,game.player)      
             makeAMove(game,game.player2)    
     
        
