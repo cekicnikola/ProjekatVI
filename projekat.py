@@ -180,20 +180,42 @@ def makeAMove(g:GameInfo,player):
         potez="horizontalno"
     
     print(f"Na potezu je {igrac} igrac, koji igra {potez}. Izaberite koordinate poteza. Unesite vrednost vrste: ")
-    r=int(input("Unos vrste(mora biti ceo broj): "))
+    while True:
+        try:
+            r=int(input(f"Unos vrste(broj od 1 do {g.rows}): "))
+            if(r not in range(1,g.rows+1)):
+                print(f"Vrednost mora biti broj od 1 do {g.rows})!")
+                continue
+            break            
+        except ValueError:
+            print(f"Vrednost mora biti broj od 1 do {g.rows})!")
+
+    """    r=int(input("Unos vrste(mora biti ceo broj): "))
     print("Unesite vrednost kolone(slovo): ")
-    c=str(input("Unos kolone: "))
-   
+    """
+    while True:
+        try:
+            c=str(input("Unos kolone:(malo slovo) "))
+            col=g.letter.index(c)
+            if(col not in range(g.columns)):
+                print(f"Vrednost mora biti slovo u opsegu {g.letter})!")
+                continue
+            break            
+        except ValueError:
+            print(f"Vrednost mora biti slovo u opsegu {g.letter})")
+ 
     #greska=uslov[1]
     col=g.letter.index(c)
     filledValue= g.isValidMove(r-1,col,player)
     if((r not in range(0,g.rows + 1) or (c not in g.letter)) or not(filledValue[0]) ):
+        print("Koordinate koje ste uneli su zauzete ili su izvan tabele!")
+        print("")
         return makeAMove(g,player)
     else:
         move(g,player,r,c)
         
     g.printTable()
-    print(f"Potez iznad je odigrao {igrac} igrac ")
+    print(f"Potez iznad je odigrao {igrac} igrac, koji igra {potez}. ")
     print("")
 
 
@@ -215,20 +237,70 @@ def allMoves(g:GameInfo):
   
 def sizeOfTable()->tuple[int,int]:
     print()
-
-    
+    print()
     print()
     print("------------------Dobrodosli u Domineering------------------")
     print("Molimo Vas unesite dimenzije table.")
-    print("Unesite broj vrsta:")
-    rows=int(input())
-    print("Unesite broj kolona:")
-    columns=int(input())
+    while True:
+        try:
+            rows = int(input("Unesi broj vrsta: "))
+            if(rows not in range(1,26)):
+                print("Broj vrsti mora biti izmedju 1 i 26!")
+                continue
+            break            
+        except ValueError:
+            print("Vrednosti moraju biti  brojevi, unesite ponovo...")
+    while True:
+        try:
+            columns = int(input("Unesi broj kolona: "))
+            print()
+            if(columns not in range(1,26)):
+                print("Broj kolona mora biti izmedju 1 i 26!")
+                continue
+            break
+        except ValueError:
+            print("Vrednosti moraju biti  brojevi, unesite ponovo...")            
     return (rows,columns)
 
 def chooseFirst()->tuple[str,str]:
-    print("Unesite 1, ako zelite da igrate protiv racunara. U suprotnom 0, ako zelite da igru igraju dva igraca.")
-    twoPlayers=int(input("Unos:"))
+    print("Unesite 1, ako zelite da igrate protiv racunara.")
+    print("U suprotnom 0, ako zelite da igru igraju dva igraca.")    
+    while True:
+        try:
+            twoPlayers = int(input("Unesi broj: "))
+            print()
+            if(twoPlayers == 0 or twoPlayers == 1):
+                break
+            print("Vrednost mora biti  broj  1 ili 0!")
+            continue            
+        except ValueError:
+            print("Vrednost mora biti  broj  1 ili 0!")
+    if(twoPlayers==0):
+        print("-----Igru igraju dva igraca.-----\n")
+        return ("X","O",False)
+    else:
+        print("-----Igru igraju igrac i racunar.-----\n")
+        print("Unesite 1, ako Vi zelite da igrate prvi. U suprotnom 0, da racunar igra prvi")       
+        while True:
+            try:
+                value = int(input("Unesi broj: "))
+                print()
+                if(value == 0 or value == 1):
+                    break
+                print("Vrednost mora biti  broj izmedju 1 i 0!")
+                continue            
+            except ValueError:
+                print("Vrednost mora biti  broj izmedju 1 i 0!")
+
+        if(value==1):
+            print("-----Igrac igra prvi!-----")
+            return ("X","O",True)
+        elif(value==0):
+            print("-----Racunar igra prvi!-----")
+            return("O","X",True)
+    
+    
+    """twoPlayers=int(input("Unos:"))
     if(twoPlayers==0):
         return ("X","O",False)
     else:
@@ -240,7 +312,7 @@ def chooseFirst()->tuple[str,str]:
             return("O","X",True)
         else:
             print("Unesite ponovo vrednosti")
-            return chooseFirst()
+            return chooseFirst()"""
 
 
 def getPosibilitiesHeurO(g:GameInfo):
